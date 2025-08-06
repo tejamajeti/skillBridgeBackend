@@ -23,11 +23,6 @@ const loadSchema = async () => {
         app.listen(process.env.PORT, () => console.log(`Server is active on port ${process.env.PORT}`))
     } catch (err) {
         console.error("schema Error: ", err);
-        if (err instanceof AggregateError && err.errors) {
-            err.errors.forEach((e, index) => {
-                console.error(`Sub-error ${index + 1}:`, e.message || e);
-            });
-        }
     }
 
 }
