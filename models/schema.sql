@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS skills (
   description TEXT,
   tags TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  image_url TEXT NOT NULL,
   FOREIGN KEY (mentor_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
