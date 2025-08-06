@@ -7,7 +7,13 @@ let db = null
 
 const initializeAndStartDb = async () => {
     try {
-        db = new Pool({ connectionString: process.env.DATABASE_URL })
+        db = new Pool({
+            connectionString: process.env.DATABASE_URL, ssl: {
+                rejectUnauthorized: false
+            }
+        }
+
+        )
         console.log("Connected to Database Successfully!!!")
     } catch (dbError) {
         console.error(dbError)
