@@ -21,9 +21,15 @@ const loadSchema = async () => {
         await db.query(schema)
         console.log("Schema initiated")
         app.listen(process.env.PORT, () => console.log(`Server is active on port ${process.env.PORT}`))
-    } catch (error) {
-        console.error(`schema Error: ${error}`)
+    } catch (err) {
+        console.error("schema Error: ", err);
+        if (err instanceof AggregateError && err.errors) {
+            err.errors.forEach((e, index) => {
+                console.error(`Sub-error ${index + 1}:`, e.message || e);
+            });
+        }
     }
+
 }
 
 loadSchema()
