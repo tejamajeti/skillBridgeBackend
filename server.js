@@ -20,7 +20,7 @@ const loadSchema = async () => {
         const schema = fs.readFileSync(path.join(__dirname, "models/schema.sql"), "utf-8")
         await db.query(schema)
         console.log("Schema initiated")
-        app.listen(process.env.PORT, () => console.log(`Server is active on port ${process.env.PORT}`))
+        app.listen(process.env.PORT || 5000, () => console.log(`Server is active on port ${process.env.PORT}`))
     } catch (err) {
         console.error("schema Error: ", err);
     }
