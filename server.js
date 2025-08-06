@@ -22,7 +22,7 @@ const loadSchema = async () => {
         console.log("Schema initiated")
         app.listen(process.env.PORT, () => console.log(`Server is active on port ${process.env.PORT}`))
     } catch (error) {
-        console.error("schema Error:", error.message)
+        console.error(`schema Error: ${error}`)
     }
 }
 
