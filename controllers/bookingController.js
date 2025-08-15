@@ -28,7 +28,7 @@ exports.bookSkill = async (request, response) => {
         return response.status(201).send("Request Sent Successfully")
     } catch (err) {
         response.status(500).send("Failed to send Request")
-        
+
         console.error(`booking skill error ${err}`)
     }
 }
@@ -70,7 +70,7 @@ exports.getReceivedBookings = async (request, response) => {
 exports.updateBookingStatus = async (request, response) => {
     const mentor = request.user
     const { booking_id } = request.params
-    const { status } = request.body
+    const { status } = request.body.status
 
     if (mentor.role !== "mentor") return response.status(403).send("Only Mentors can update booking status!!")
 
