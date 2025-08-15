@@ -1,4 +1,4 @@
--- Users Table
+
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS users (
   bio TEXT
 );
 
--- Skills Table
 CREATE TABLE IF NOT EXISTS skills (
   id SERIAL PRIMARY KEY,
   mentor_id INTEGER NOT NULL,
@@ -20,7 +19,6 @@ CREATE TABLE IF NOT EXISTS skills (
   FOREIGN KEY (mentor_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Bookings Table
 CREATE TABLE IF NOT EXISTS bookings (
   id SERIAL PRIMARY KEY,
   skill_id INTEGER NOT NULL,

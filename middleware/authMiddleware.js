@@ -5,9 +5,7 @@ const middlewareFunction = async (request, response, next) => {
     try {
         const authHeaders = request.headers['authorization']
         const jwtToken = authHeaders?.split(" ")[1]
-        console.log(`jwtToken sent by user: ${jwtToken}`)
         if (!jwtToken) return response.status(403).send(`Access Denied No Token Provided`)
-
         const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY)
         const db = await exportDb()
         const dbResult = await db.query(`SELECT * FROM users WHERE id = $1;`, [decoded.id])

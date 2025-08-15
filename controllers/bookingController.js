@@ -70,7 +70,9 @@ exports.getReceivedBookings = async (request, response) => {
 exports.updateBookingStatus = async (request, response) => {
     const mentor = request.user
     const { booking_id } = request.params
-    const { status } = request.body.status
+    const { status } = request.body
+    console.log(status)
+    console.log(mentor.id)
 
     if (mentor.role !== "mentor") return response.status(403).send("Only Mentors can update booking status!!")
 
@@ -81,15 +83,16 @@ exports.updateBookingStatus = async (request, response) => {
     try {
         const db = await exportDb()
 
-        const booking = await db.query(`SELECT b.*,s.mentor_id FROM bookings b INNER JOIN skills s ON b.skill_id = s.id WHERE b.id = $1;`, [booking_id]).rows
+        const booking = await db.query(`SELECT b.*,s.mentor_id FROM bookings b INNER JOIN skills s ON b.skill_id = s.id WHERE b.id = $1;`, [booking_id])
 
-        if (!booking || booking.mentor_id !== mentor.id) return response.status.send(403).send(`Booking Not Found or unAuthorized`)
+        if (!booking.rows || booking.rows[0].mentor_id !== mentor.id) return response.status(403).send(`Booking Not Found or unAuthorized`)
 
         await db.query(`UPDATE bookings SET status = $1 WHERE id = $2 RETURNING *;`, [status, booking_id])
 
         response.status(200).send("Booking status Updated")
     } catch (err) {
         response.status(500).send(`Failed to Update status `)
+        console.log(err.message)
     }
 }
 
