@@ -12,11 +12,10 @@ app.use(express.json())
 app.use(cors())
 dotenv.config()
 
-const { exportDb } = require("./db/database")
+const db = require("./db/database")
 
 const loadSchema = async () => {
     try {
-        const db = await exportDb()
         const schema = fs.readFileSync(path.join(__dirname, "models/schema.sql"), "utf-8")
         await db.query(schema)
         console.log("Schema initiated")

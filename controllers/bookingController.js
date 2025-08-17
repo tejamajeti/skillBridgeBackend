@@ -1,4 +1,4 @@
-const { exportDb } = require("../db/database")
+const db = require("../db/database")
 
 exports.bookSkill = async (request, response) => {
     const { skill_id, message } = request.body
@@ -9,7 +9,6 @@ exports.bookSkill = async (request, response) => {
 
 
     try {
-        const db = await exportDb()
 
         const dbResponse = await db.query(`SELECT * FROM skills WHERE id = $1`, [skill_id])
 
@@ -28,16 +27,13 @@ exports.bookSkill = async (request, response) => {
         return response.status(201).send("Request Sent Successfully")
     } catch (err) {
         response.status(500).send("Failed to send Request")
-
-        console.error(`booking skill error ${err}`)
+        console.error(`booking skill error ${err.message}`)
     }
 }
 
 
 exports.getMyBookings = async (request, response) => {
     const learner = request.user
-
-    const db = await exportDb()
 
     try {
         if (learner.role !== "learner") return response.status(403).send("Access Denied")
@@ -57,7 +53,6 @@ exports.getReceivedBookings = async (request, response) => {
     if (mentor.role !== "mentor") return response.status(403).send("Access Denied")
 
     try {
-        const db = await exportDb()
 
         const bookings = await db.query(`SELECT b.*, s.title AS skill_title,u.name AS learner_name FROM bookings b INNER JOIN skills s ON b.skill_id = s.id INNER JOIN users u ON u.id = b.learner_id WHERE s.mentor_id = $1 ORDER BY b.created_at DESC;`, [mentor.id])
 
@@ -71,8 +66,6 @@ exports.updateBookingStatus = async (request, response) => {
     const mentor = request.user
     const { booking_id } = request.params
     const { status } = request.body
-    console.log(status)
-    console.log(mentor.id)
 
     if (mentor.role !== "mentor") return response.status(403).send("Only Mentors can update booking status!!")
 
@@ -81,7 +74,6 @@ exports.updateBookingStatus = async (request, response) => {
 
 
     try {
-        const db = await exportDb()
 
         const booking = await db.query(`SELECT b.*,s.mentor_id FROM bookings b INNER JOIN skills s ON b.skill_id = s.id WHERE b.id = $1;`, [booking_id])
 
@@ -100,7 +92,6 @@ exports.deleteBookings = async (request, response) => {
     const { booking_id } = request.params
 
     try {
-        const db = await exportDb()
         const bookingResponse = await db.query(`SELECT * FROM bookings WHERE id = $1`, [booking_id])
 
         const booking = bookingResponse.rows[0]

@@ -8,23 +8,17 @@ let db = null
 const initializeAndStartDb = async () => {
     try {
         db = new Pool({
-            connectionString: process.env.DATABASE_URL, ssl: process.env.NODE_ENV === 'production'
-                ? { rejectUnauthorized: false }
-                : false
-        }
-
-        )
-        console.log("Connected to Database Successfully!!!")
+            connectionString: process.env.DATABASE_URL,
+            ssl: { require: true, rejectUnauthorized: false },
+            max: 5,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 10000,
+        })
     } catch (dbError) {
-        console.error(dbError)
-        throw dbError
+        console.error(dbError.message)
+        // throw dbError
     }
 }
-
 initializeAndStartDb()
 
-
-exports.exportDb = async () => {
-    if (!db) await initializeAndStartDb()
-    return db
-}
+module.exports = db

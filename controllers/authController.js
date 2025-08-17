@@ -1,4 +1,4 @@
-const { exportDb } = require("../db/database")
+const db = require("../db/database")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
@@ -10,7 +10,6 @@ exports.register = async (request, response) => {
     }
 
     try {
-        const db = await exportDb()
         const dbResult = await db.query(`SELECT * FROM users WHERE email = $1;`, [email])
         const existingUser = dbResult.rows[0]
         if (existingUser) {
@@ -28,7 +27,6 @@ exports.register = async (request, response) => {
 exports.login = async (request, response) => {
     const { email, password } = request.body
     try {
-        const db = await exportDb()
         const dbResult = await db.query(`SELECT * FROM users WHERE email = $1;`, [email])
         const isExistingUser = dbResult.rows[0]
         if (!isExistingUser) return response.status(401).send(`User Not Found`)
@@ -38,5 +36,16 @@ exports.login = async (request, response) => {
         response.status(200).json({ message: `Login Successful`, jwt_token: jwtToken, user: { id: isExistingUser.id, name: isExistingUser.name, email: isExistingUser.email, bio: isExistingUser.bio, role: isExistingUser.role } })
     } catch (error) {
         response.status(500).json({ message: "Internal Server Error", error: error.message })
+    }
+}
+
+exports.verifyEmail = async (request, response) => {
+    const { email } = request.body
+    try {
+        const dbResponse = await db.query(`SELECT * FROM users WHERE email = $1`, [email])
+        if (!dbResponse.rows[0]) return response.status(401).send("Email not found")
+        return response.status(200).send("valid User")
+    } catch (err) {
+        response.status(500).send("Failed to Validate user email")
     }
 }

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const { exportDb } = require("../db/database")
+const db = require("../db/database")
 
 const middlewareFunction = async (request, response, next) => {
     try {
@@ -7,7 +7,6 @@ const middlewareFunction = async (request, response, next) => {
         const jwtToken = authHeaders?.split(" ")[1]
         if (!jwtToken) return response.status(403).send(`Access Denied No Token Provided`)
         const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY)
-        const db = await exportDb()
         const dbResult = await db.query(`SELECT * FROM users WHERE id = $1;`, [decoded.id])
         const isValidUser = dbResult.rows[0]
         if (!isValidUser) return response.status(404).send(`User Not Found`)
