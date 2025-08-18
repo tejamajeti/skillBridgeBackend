@@ -10,7 +10,7 @@ const initializeAndStartDb = async () => {
         db = new Pool({
             connectionString: process.env.DATABASE_URL,
             ssl: { require: true, rejectUnauthorized: false },
-            max: 5,
+            max: 15,
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 10000,
         })
@@ -20,5 +20,9 @@ const initializeAndStartDb = async () => {
     }
 }
 initializeAndStartDb()
+
+db.on("error", (err) => {
+  console.error("Unexpected error on idle client", err);
+});
 
 module.exports = db

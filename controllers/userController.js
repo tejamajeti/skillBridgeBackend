@@ -39,7 +39,7 @@ exports.resetPassword = async (request, response) => {
 
         if (isExistingPassword) return response.status(400).send("New password cannot be same as old one")
 
-        const hashedPassword = await bcrypt.hash(new_password, 15)
+        const hashedPassword = await bcrypt.hash(new_password, 10)
 
         await db.query(`UPDATE users SET password = $1 WHERE email = $2 RETURNING *`, [hashedPassword, email])
 
