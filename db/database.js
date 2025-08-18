@@ -22,7 +22,13 @@ const initializeAndStartDb = async () => {
 initializeAndStartDb()
 
 db.on("error", (err) => {
-  console.error("Unexpected error on idle client", err);
+    console.error("DB pool error:", err.code, err.message);
+
+    if (["XX000", "57P01", "57P02", "57P03", "08006"].includes(err.code)) {
+        console.warn("Database connection was terminated by Supabase. The pool will auto-recover on next query.");
+        initializeAndStartDb()
+    }
 });
+
 
 module.exports = db
